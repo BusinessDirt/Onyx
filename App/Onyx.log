@@ -1,34 +1,35 @@
-[17:36:10] [info] ONYX: Creating window Onyx App (1280, 720)
-[17:36:10] [info] ONYX: Initializing GLFW
-[17:36:10] [info] ONYX: Available extensions: 
-[17:36:10] [info] ONYX: 	VK_KHR_device_group_creation
-[17:36:10] [info] ONYX: 	VK_KHR_display
-[17:36:10] [info] ONYX: 	VK_KHR_external_fence_capabilities
-[17:36:10] [info] ONYX: 	VK_KHR_external_memory_capabilities
-[17:36:10] [info] ONYX: 	VK_KHR_external_semaphore_capabilities
-[17:36:10] [info] ONYX: 	VK_KHR_get_display_properties2
-[17:36:10] [info] ONYX: 	VK_KHR_get_physical_device_properties2
-[17:36:10] [info] ONYX: 	VK_KHR_get_surface_capabilities2
-[17:36:10] [info] ONYX: 	VK_KHR_surface
-[17:36:10] [info] ONYX: 	VK_KHR_surface_protected_capabilities
-[17:36:10] [info] ONYX: 	VK_KHR_win32_surface
-[17:36:10] [info] ONYX: 	VK_EXT_debug_report
-[17:36:10] [info] ONYX: 	VK_EXT_debug_utils
-[17:36:10] [info] ONYX: 	VK_EXT_direct_mode_display
-[17:36:10] [info] ONYX: 	VK_EXT_surface_maintenance1
-[17:36:10] [info] ONYX: 	VK_EXT_swapchain_colorspace
-[17:36:10] [info] ONYX: 	VK_NV_external_memory_capabilities
-[17:36:10] [info] ONYX: 	VK_KHR_portability_enumeration
-[17:36:10] [info] ONYX: 	VK_LUNARG_direct_driver_loading
-[17:36:10] [info] ONYX: Required extensions:
-[17:36:10] [info] ONYX: 	VK_KHR_surface
-[17:36:10] [info] ONYX: 	VK_KHR_win32_surface
-[17:36:10] [info] ONYX: 	VK_EXT_debug_utils
-[17:36:10] [info] ONYX: Device count: 1
-[17:36:10] [info] ONYX: Physical Device: NVIDIA GeForce RTX 3060 Ti
-[17:36:10] [info] ONYX: Present mode: Mailbox
-[17:36:10] [info] ONYX: Vertex count (models/flat_vase.obj): 23894
-[17:36:10] [info] ONYX: Vertex count (models/smooth_vase.obj): 5545
-[17:36:10] [info] ONYX: Vertex count (models/quad.obj): 4
-[17:36:10] [info] ONYX: Present mode: Mailbox
-[17:36:12] [info] ONYX: Terminating GLFW
+[20:56:59] [info] ONYX: Creating window Onyx App (1280, 720)
+[20:56:59] [info] ONYX: Initializing GLFW
+[20:56:59] [info] ONYX: Available extensions: 
+[20:56:59] [info] ONYX: 	VK_KHR_device_group_creation
+[20:56:59] [info] ONYX: 	VK_KHR_display
+[20:56:59] [info] ONYX: 	VK_KHR_external_fence_capabilities
+[20:56:59] [info] ONYX: 	VK_KHR_external_memory_capabilities
+[20:56:59] [info] ONYX: 	VK_KHR_external_semaphore_capabilities
+[20:56:59] [info] ONYX: 	VK_KHR_get_display_properties2
+[20:56:59] [info] ONYX: 	VK_KHR_get_physical_device_properties2
+[20:56:59] [info] ONYX: 	VK_KHR_get_surface_capabilities2
+[20:56:59] [info] ONYX: 	VK_KHR_surface
+[20:56:59] [info] ONYX: 	VK_KHR_surface_protected_capabilities
+[20:56:59] [info] ONYX: 	VK_KHR_win32_surface
+[20:56:59] [info] ONYX: 	VK_EXT_debug_report
+[20:56:59] [info] ONYX: 	VK_EXT_debug_utils
+[20:56:59] [info] ONYX: 	VK_EXT_direct_mode_display
+[20:56:59] [info] ONYX: 	VK_EXT_surface_maintenance1
+[20:56:59] [info] ONYX: 	VK_EXT_swapchain_colorspace
+[20:56:59] [info] ONYX: 	VK_NV_external_memory_capabilities
+[20:56:59] [info] ONYX: 	VK_KHR_portability_enumeration
+[20:56:59] [info] ONYX: 	VK_LUNARG_direct_driver_loading
+[20:56:59] [info] ONYX: Required extensions:
+[20:56:59] [info] ONYX: 	VK_KHR_surface
+[20:56:59] [info] ONYX: 	VK_KHR_win32_surface
+[20:56:59] [info] ONYX: 	VK_EXT_debug_utils
+[20:56:59] [info] ONYX: Device count: 1
+[20:56:59] [info] ONYX: Physical Device: NVIDIA GeForce RTX 3060 Ti
+[20:56:59] [info] ONYX: Present mode: Mailbox
+[20:57:00] [info] ONYX: Vertex count (models/flat_vase.obj): 23894
+[20:57:00] [info] ONYX: Vertex count (models/smooth_vase.obj): 5545
+[20:57:00] [info] ONYX: Vertex count (models/quad.obj): 4
+[20:57:00] [info] ONYX: Present mode: Mailbox
+[20:57:04] [info] ONYX: Present mode: Mailbox
+[20:57:16] [info] ONYX: Terminating GLFW

@@ -24,9 +24,7 @@ namespace Onyx
 
 	private:
 		Scope<Renderer> m_Renderer;
-		Scope<DescriptorPool> m_GlobalPool;
-		Scope<DescriptorSetLayout> m_GlobalSetLayout;
-		std::vector<VkDescriptorSet> m_GlobalDescriptorSets;
+		Scope<DescriptorSetManager> m_DescriptorSetManager;
 		GameObject::Map m_GameObjects;
 
 		Scope<SimpleRenderSystem> m_SimpleRenderSystem;

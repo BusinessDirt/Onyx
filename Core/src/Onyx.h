@@ -15,4 +15,7 @@
 #include "Onyx/Scene/GameObject.h"
 #include "Onyx/Scene/Camera.h"
 
-#include "Platform/Vulkan/Descriptors/DescriptorWriter.h"
+#include "Platform/Vulkan/Descriptor/Sets.h"
+#include "Platform/Vulkan/Descriptor/Layout.h"
+#include "Platform/Vulkan/Descriptor/Pool.h"
+#include "Platform/Vulkan/Descriptor/Manager.h"

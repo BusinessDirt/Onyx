@@ -8,10 +8,12 @@ namespace Onyx
 	{
 		m_Renderer = CreateScope<Renderer>();
 
-		m_GlobalPool = DescriptorPool::Builder()
-			.SetMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
-			.AddPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
-			.Build();
+		std::vector<DescriptorBinding> descriptorBindings =
+		{
+			{0, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS }
+		};
+
+		m_DescriptorSetManager.reset(new DescriptorSetManager(descriptorBindings, SwapChain::MAX_FRAMES_IN_FLIGHT));
 
 		LoadGameObjects();
 
@@ -31,21 +33,23 @@ namespace Onyx
 			m_UniformBuffers[i]->Map();
 		}
 
-		m_GlobalSetLayout = DescriptorSetLayout::Builder(Application::Get().GetDevice())
-			.AddBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
-			.Build();
-
-		m_GlobalDescriptorSets.resize(SwapChain::MAX_FRAMES_IN_FLIGHT);
-		for (int i = 0; i < m_GlobalDescriptorSets.size(); i++)
+		DescriptorSets& descriptorSets = m_DescriptorSetManager->GetSets();
+		for (int i = 0; i < SwapChain::MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			VkDescriptorBufferInfo bufferInfo = m_UniformBuffers[i]->GetDescriptorInfo();
-			DescriptorWriter(*m_GlobalSetLayout, *m_GlobalPool)
-				.WriteBuffer(0, &bufferInfo)
-				.Build(m_GlobalDescriptorSets[i]);
+			VkDescriptorBufferInfo uniformBufferInfo = m_UniformBuffers[i]->GetDescriptorInfo();
+			
+			// materials, textures etc
+
+			const std::vector<VkWriteDescriptorSet> descriptorWrites =
+			{
+				descriptorSets.Bind(i, 0, uniformBufferInfo)
+			};
+
+			descriptorSets.Update(i, descriptorWrites);
 		}
 
-		m_SimpleRenderSystem = CreateScope<SimpleRenderSystem>(m_Renderer->GetSwapChainRenderPass(), m_GlobalSetLayout->GetDescriptorSetLayout());
-		m_PointLightRenderSystem = CreateScope<PointLightRenderSystem>(m_Renderer->GetSwapChainRenderPass(), m_GlobalSetLayout->GetDescriptorSetLayout());
+		m_SimpleRenderSystem = CreateScope<SimpleRenderSystem>(m_Renderer->GetSwapChainRenderPass(), m_DescriptorSetManager->GetLayout().GetHandle());
+		m_PointLightRenderSystem = CreateScope<PointLightRenderSystem>(m_Renderer->GetSwapChainRenderPass(), m_DescriptorSetManager->GetLayout().GetHandle());
 	}
 
 	void ApplicationLayer::OnDetach()
@@ -60,8 +64,7 @@ namespace Onyx
 			m_UniformBuffers[i] = nullptr;
 		}
 
-		m_GlobalSetLayout = nullptr;
-		m_GlobalPool = nullptr;
+		m_DescriptorSetManager = nullptr;
 		
 		m_SimpleRenderSystem = nullptr;
 		m_PointLightRenderSystem = nullptr;
@@ -76,7 +79,7 @@ namespace Onyx
 		if (VkCommandBuffer commandBuffer = m_Renderer->BeginFrame())
 		{
 			int frameIndex = m_Renderer->GetFrameIndex();
-			FrameInfo frameInfo{ frameIndex, ts, commandBuffer, m_CameraController.GetCamera(), m_GlobalDescriptorSets[frameIndex], m_GameObjects};
+			FrameInfo frameInfo{ frameIndex, ts, commandBuffer, m_CameraController.GetCamera(), m_DescriptorSetManager->GetSets().GetHandle(frameIndex), m_GameObjects};
 
 			// update
 			GlobalUbo ubo{};
