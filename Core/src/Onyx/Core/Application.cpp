@@ -26,7 +26,9 @@ namespace Onyx
 		m_Window->SetEventCallback(ONYX_BIND_EVENT_FN(Application::OnEvent));
 
 		m_Instance = CreateScope<Instance>();
+#ifdef ONYX_DEBUG
 		m_DebugMessenger = CreateScope<DebugMessenger>();
+#endif
 		m_Surface = CreateScope<Surface>();
 		m_PhysicalDevice = CreateScope<PhysicalDevice>();
 		m_Device = CreateScope<Device>();
