@@ -9,8 +9,7 @@
 #include "Onyx/Input/Input.h"
 
 #include "Onyx/Core/Renderer/Renderer.h"
-#include "Onyx/Core/Renderer/SimpleRenderSystem.h"
-#include "Onyx/Core/Renderer/PointLightRenderSystem.h"
+#include "Onyx/Core/Renderer/RenderSystem.h"
 
 #include "Onyx/Scene/GameObject.h"
 #include "Onyx/Scene/Camera.h"
@@ -19,3 +18,6 @@
 #include "Platform/Vulkan/Descriptor/Layout.h"
 #include "Platform/Vulkan/Descriptor/Pool.h"
 #include "Platform/Vulkan/Descriptor/Manager.h"
+
+#include "Platform/Vulkan/Pipeline/PipelineLayout.h"
+#include "Platform/Vulkan/Pipeline/Pipeline.h"

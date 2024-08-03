@@ -23,12 +23,8 @@ namespace Onyx
 		void LoadGameObjects();
 
 	private:
-		Scope<Renderer> m_Renderer;
 		Scope<DescriptorSetManager> m_DescriptorSetManager;
 		GameObject::Map m_GameObjects;
-
-		Scope<SimpleRenderSystem> m_SimpleRenderSystem;
-		Scope<PointLightRenderSystem> m_PointLightRenderSystem;
 
 		std::vector<Scope<Buffer>> m_UniformBuffers;
 		CameraController m_CameraController;

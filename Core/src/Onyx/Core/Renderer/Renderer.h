@@ -3,10 +3,11 @@
 #include <vector>
 
 #include "Onyx/Core/Base.h"
+#include "Onyx/Core/Renderer/RenderSystem.h"
 
-#include "Onyx/Core/Window.h"
-#include "Platform/Vulkan/Device.h"
 #include "Platform/Vulkan/SwapChain.h"
+
+#include "Platform/Vulkan/FrameInfo.h"
 
 namespace Onyx
 {
@@ -35,11 +36,19 @@ namespace Onyx
 			return m_CurrentFrameIndex;
 		}
 
+		void Render(FrameInfo& info) const;
+		void Update(FrameInfo& info, GlobalUbo& ubo) const;
+
 	public:
 		VkCommandBuffer BeginFrame();
 		void EndFrame();
 		void BeginSwapChainRenderPass(VkCommandBuffer commandBuffer);
 		void EndSwapChainRenderPass(VkCommandBuffer commandBuffer);
+
+		void PushRenderSystem(RenderSystem* system)
+		{
+			m_RenderSystems.emplace_back(system);
+		}
 
 	private:
 		void CreateCommandBuffers();
@@ -49,6 +58,7 @@ namespace Onyx
 	private:
 		Scope<SwapChain> m_SwapChain;
 		std::vector<VkCommandBuffer> m_CommandBuffers;
+		std::vector<RenderSystem*> m_RenderSystems;
 
 		uint32_t m_CurrentImageIndex{ 0 };
 		int m_CurrentFrameIndex{ 0 };

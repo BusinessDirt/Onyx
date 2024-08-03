@@ -62,6 +62,7 @@ namespace Onyx
 		PhysicalDevice& GetPhysicalDevice() { return *m_PhysicalDevice; }
 		Device& GetDevice() { return *m_Device; }
 		CommandPool& GetCommandPool() { return *m_CommandPool; }
+		Renderer& GetRenderer() { return *m_Renderer; }
 
 		static Application& Get() { return *s_Instance; }
 
@@ -78,6 +79,7 @@ namespace Onyx
 		Scope<PhysicalDevice> m_PhysicalDevice;
 		Scope<Device> m_Device;
 		Scope<CommandPool> m_CommandPool;
+		Scope<Renderer> m_Renderer;
 
 		bool m_Running = true;
 		Timestep m_Timestep{};

@@ -1,13 +1,14 @@
 #include "ApplicationLayer.h"
 
+#include "RenderSystems/PointLightRenderSystem.h"
+#include "RenderSystems/SimpleRenderSystem.h"
+
 namespace Onyx
 {
 
 	ApplicationLayer::ApplicationLayer()
 		: Layer("Application Layer")
 	{
-		m_Renderer = CreateScope<Renderer>();
-
 		std::vector<DescriptorBinding> descriptorBindings =
 		{
 			{0, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS }
@@ -48,8 +49,8 @@ namespace Onyx
 			descriptorSets.Update(i, descriptorWrites);
 		}
 
-		m_SimpleRenderSystem = CreateScope<SimpleRenderSystem>(m_Renderer->GetSwapChainRenderPass(), m_DescriptorSetManager->GetLayout().GetHandle());
-		m_PointLightRenderSystem = CreateScope<PointLightRenderSystem>(m_Renderer->GetSwapChainRenderPass(), m_DescriptorSetManager->GetLayout().GetHandle());
+		Application::Get().GetRenderer().PushRenderSystem(new SimpleRenderSystem(m_DescriptorSetManager->GetLayout()));
+		Application::Get().GetRenderer().PushRenderSystem(new PointLightRenderSystem(m_DescriptorSetManager->GetLayout()));
 	}
 
 	void ApplicationLayer::OnDetach()
@@ -65,20 +66,16 @@ namespace Onyx
 		}
 
 		m_DescriptorSetManager = nullptr;
-		
-		m_SimpleRenderSystem = nullptr;
-		m_PointLightRenderSystem = nullptr;
-		m_Renderer = nullptr;
 	}
 
 	void ApplicationLayer::OnUpdate(float ts)
 	{
 		m_CameraController.OnUpdate(ts);
-		m_CameraController.SetPerspectiveProjection(glm::radians(50.0f), m_Renderer->GetAspectRatio(), 0.1f, 100.0f);
+		m_CameraController.SetPerspectiveProjection(glm::radians(50.0f), Application::Get().GetRenderer().GetAspectRatio(), 0.1f, 100.0f);
 
-		if (VkCommandBuffer commandBuffer = m_Renderer->BeginFrame())
+		if (VkCommandBuffer commandBuffer = Application::Get().GetRenderer().BeginFrame())
 		{
-			int frameIndex = m_Renderer->GetFrameIndex();
+			int frameIndex = Application::Get().GetRenderer().GetFrameIndex();
 			FrameInfo frameInfo{ frameIndex, ts, commandBuffer, m_CameraController.GetCamera(), m_DescriptorSetManager->GetSets().GetHandle(frameIndex), m_GameObjects};
 
 			// update
@@ -86,16 +83,15 @@ namespace Onyx
 			ubo.View = m_CameraController.GetCamera().GetView();
 			ubo.Projection = m_CameraController.GetCamera().GetProjection();
 
-			m_PointLightRenderSystem->Update(frameInfo, ubo);
+			Application::Get().GetRenderer().Update(frameInfo, ubo);
 
 			m_UniformBuffers[frameIndex]->WriteToBuffer(&ubo);
 
 			// render
-			m_Renderer->BeginSwapChainRenderPass(commandBuffer);
-			m_SimpleRenderSystem->Render(frameInfo);
-			m_PointLightRenderSystem->Render(frameInfo);
-			m_Renderer->EndSwapChainRenderPass(commandBuffer);
-			m_Renderer->EndFrame();
+			Application::Get().GetRenderer().BeginSwapChainRenderPass(commandBuffer);
+			Application::Get().GetRenderer().Render(frameInfo);
+			Application::Get().GetRenderer().EndSwapChainRenderPass(commandBuffer);
+			Application::Get().GetRenderer().EndFrame();
 		}
 	}
 

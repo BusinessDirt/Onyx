@@ -13,9 +13,27 @@ namespace Onyx
 
 	Renderer::~Renderer()
 	{
+		for (auto& system : m_RenderSystems)
+		{
+			delete system;
+			system = nullptr;
+		}
+
 		m_SwapChain = nullptr;
 
 		FreeCommandBuffers();
+	}
+
+	void Renderer::Render(FrameInfo& info) const
+	{
+		for (RenderSystem* system : m_RenderSystems)
+			system->Render(info);
+	}
+
+	void Renderer::Update(FrameInfo& info, GlobalUbo& ubo) const
+	{
+		for (RenderSystem* system : m_RenderSystems)
+			system->Update(info, ubo);
 	}
 
 	VkCommandBuffer Renderer::BeginFrame()

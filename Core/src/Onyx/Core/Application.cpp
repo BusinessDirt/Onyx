@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Application.h"
 
-#include "Onyx/Core/Renderer/SimpleRenderSystem.h"
-
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
@@ -33,12 +31,14 @@ namespace Onyx
 		m_PhysicalDevice = CreateScope<PhysicalDevice>();
 		m_Device = CreateScope<Device>();
 		m_CommandPool = CreateScope<CommandPool>();
+		m_Renderer = CreateScope<Renderer>();
 	}
 
 	Application::~Application()
 	{
 		for (Layer* layer : m_Layerstack) layer->OnDetach();
 
+		m_Renderer = nullptr;
 		m_CommandPool = nullptr;
 		m_Device = nullptr;
 #ifdef ONYX_DEBUG
