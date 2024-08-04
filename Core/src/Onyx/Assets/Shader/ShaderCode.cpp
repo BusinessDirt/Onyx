@@ -129,21 +129,25 @@ namespace Onyx
 		spirv_cross::Compiler compiler(m_Data);
 		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
 
-		ONYX_CORE_TRACE("ShaderCode::Reflect - {0}", path.filename().string().c_str());
-		ONYX_CORE_TRACE("    {0} uniform buffers", resources.uniform_buffers.size());
-		ONYX_CORE_TRACE("    {0} resources", resources.sampled_images.size());
-		ONYX_CORE_TRACE("    {0} push constants", resources.push_constant_buffers.size());
-
-		ONYX_CORE_TRACE("Uniform buffers:");
-		for (const spirv_cross::Resource& resource : resources.uniform_buffers) 
+		// Uniform buffers
+		for (const spirv_cross::Resource& resource : resources.uniform_buffers)
 		{
-			ReflectResource(compiler, resource);
+			const spirv_cross::SPIRType& bufferType = compiler.get_type(resource.base_type_id);
+
+			UniformBufferInformation bufferInfo{};
+			bufferInfo.Size = compiler.get_declared_struct_size(bufferType);
+			bufferInfo.Binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+			compiler.get_binary_offset_for_decoration(resource.id, spv::DecorationBinding, bufferInfo.Offset);
+			m_ShaderInformation.UniformBuffers.push_back(bufferInfo);
 		}
 
-		ONYX_CORE_TRACE("Push constants:");
+		// Push Constants
 		for (const spirv_cross::Resource& resource : resources.push_constant_buffers)
 		{
-			ReflectResource(compiler, resource);
+			const spirv_cross::SPIRType& bufferType = compiler.get_type(resource.base_type_id);
+
+			m_ShaderInformation.PushConstantInformation.Size = compiler.get_declared_struct_size(bufferType);
+			compiler.get_binary_offset_for_decoration(resource.id, spv::DecorationBinding, m_ShaderInformation.PushConstantInformation.Offset);
 		}
 	}
 

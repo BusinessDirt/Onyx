@@ -26,23 +26,18 @@ namespace Onyx
 
 	PointLightRenderSystem::PointLightRenderSystem(const DescriptorSetLayout& globalSetLayout)
 	{
-		VkPushConstantRange pushConstantRange{};
-		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-		pushConstantRange.offset = 0;
-		pushConstantRange.size = sizeof(PointLightPushConstant);
+		PipelineConfigInfo configInfo{};
+		Pipeline::DefaultPipelineConfigInfo(configInfo);
+		configInfo.AttributeDescriptions.clear();
+		configInfo.BindingDescriptions.clear();
 
-		m_PipelineLayout = CreateScope<PipelineLayout>(globalSetLayout, &pushConstantRange);
-		
-		ONYX_CORE_ASSERT(m_PipelineLayout, "Cannot create pipeline before pipeline layout");
+		ONYX_INFO("Point Light Push Constant Data Size: {0}", sizeof(PointLightPushConstant));
+		m_Pipeline = CreateScope<Pipeline>("point_light.vert", "point_light.frag", configInfo, globalSetLayout);
+	}
 
-		PipelineConfigInfo pipelineConfig{};
-		Pipeline::DefaultPipelineConfigInfo(pipelineConfig);
-		pipelineConfig.RenderPass = Application::Get().GetRenderer().GetSwapChainRenderPass();
-		pipelineConfig.PipelineLayout = m_PipelineLayout->GetHandle();
-		pipelineConfig.AttributeDescriptions.clear();
-		pipelineConfig.BindingDescriptions.clear();
-
-		m_Pipeline = CreateScope<Pipeline>("point_light.vert", "point_light.frag", pipelineConfig);
+	PointLightRenderSystem::~PointLightRenderSystem()
+	{
+		m_Pipeline = nullptr;
 	}
 
 	void PointLightRenderSystem::Update(FrameInfo& info, GlobalUbo& ubo)
@@ -66,10 +61,7 @@ namespace Onyx
 
 	void PointLightRenderSystem::Render(FrameInfo& info)
 	{
-		m_Pipeline->Bind(info.CommandBuffer);
-
-		vkCmdBindDescriptorSets(info.CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout->GetHandle(), 0, 1,
-			&info.GlobalDescriptorSet, 0, nullptr);
+		m_Pipeline->Bind(info);
 
 		for (auto& [id, obj] : info.GameObjects)
 		{
@@ -80,8 +72,7 @@ namespace Onyx
 			push.Color = glm::vec4(obj->Color, obj->PointLight->LightIntensity);
 			push.Radius = obj->Transform.Scale.x;
 
-			vkCmdPushConstants(info.CommandBuffer, m_PipelineLayout->GetHandle(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-				0, sizeof(PointLightPushConstant), &push);
+			m_Pipeline->PushConstants(info, &push);
 
 			vkCmdDraw(info.CommandBuffer, 6, 1, 0, 0);
 		}

@@ -9,21 +9,112 @@
 
 namespace Onyx
 {
-	Pipeline::Pipeline(const std::string& vertFilepath, const std::string& fragFilepath, const PipelineConfigInfo& configInfo)
+	Pipeline::Pipeline(const std::string& vertFilepath, const std::string& fragFilepath, PipelineConfigInfo& configInfo, const DescriptorSetLayout& descriptorSetLayout)
 	{
-		CreateGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
+		const ShaderCode& vertexCode = Application::Get().GetAssetManager().GetShader(vertFilepath);
+		const ShaderCode& fragmentCode = Application::Get().GetAssetManager().GetShader(fragFilepath);
+
+		// Pipeline Layout
+		{
+			// invalid if both push constant sizes are greater than 0 and not equal
+			uint32_t vertexPushConstantSize = vertexCode.GetInformation().PushConstantInformation.Size;
+			uint32_t fragmentPushConstantSize = fragmentCode.GetInformation().PushConstantInformation.Size;
+			ONYX_VK_ASSERT(vertexPushConstantSize > 0 && fragmentPushConstantSize > 0 && vertexPushConstantSize != fragmentPushConstantSize,
+				"Invalid push constant definition in shader");
+
+			m_PushConstantInfo.Size = vertexPushConstantSize;
+			m_PushConstantInfo.Offset = vertexCode.GetInformation().PushConstantInformation.Offset;
+			// push constant can be available in one shader or both
+			m_PushConstantInfo.Flags = (vertexPushConstantSize > 0 ? VK_SHADER_STAGE_VERTEX_BIT : 0) |
+				(fragmentPushConstantSize > 0 ? VK_SHADER_STAGE_FRAGMENT_BIT : 0);
+
+			VkPushConstantRange pushConstantRange{};
+			pushConstantRange.stageFlags = m_PushConstantInfo.Flags;
+			pushConstantRange.offset = m_PushConstantInfo.Offset;
+			pushConstantRange.size = m_PushConstantInfo.Size;
+
+			m_PipelineLayout = CreateScope<PipelineLayout>(descriptorSetLayout, &pushConstantRange);
+		}
+
+		// Pipeline
+		{
+			configInfo.RenderPass = Application::Get().GetRenderer().GetSwapChainRenderPass();
+			configInfo.PipelineLayout = m_PipelineLayout->GetHandle();
+
+			ONYX_CORE_ASSERT(configInfo.PipelineLayout != VK_NULL_HANDLE, "Cannot create graphics pipeline:: no PipelineLayout provided in configInfo");
+			ONYX_CORE_ASSERT(configInfo.RenderPass != VK_NULL_HANDLE, "Cannot create graphics pipeline:: no RenderPass provided in configInfo");
+
+			CreateShaderModule(vertexCode, &m_VertShaderModule);
+			CreateShaderModule(fragmentCode, &m_FragShaderModule);
+
+			VkPipelineShaderStageCreateInfo shaderStages[2];
+			shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+			shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
+			shaderStages[0].module = m_VertShaderModule;
+			shaderStages[0].pName = "main";
+			shaderStages[0].flags = 0;
+			shaderStages[0].pNext = nullptr;
+			shaderStages[0].pSpecializationInfo = nullptr;
+			shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+			shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+			shaderStages[1].module = m_FragShaderModule;
+			shaderStages[1].pName = "main";
+			shaderStages[1].flags = 0;
+			shaderStages[1].pNext = nullptr;
+			shaderStages[1].pSpecializationInfo = nullptr;
+
+			auto& bindingDescriptions = configInfo.BindingDescriptions;
+			auto& attributeDescriptions = configInfo.AttributeDescriptions;
+			VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+			vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+			vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+			vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
+			vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+			vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
+
+			VkGraphicsPipelineCreateInfo pipelineInfo{};
+			pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+			pipelineInfo.stageCount = 2;
+			pipelineInfo.pStages = shaderStages;
+			pipelineInfo.pVertexInputState = &vertexInputInfo;
+			pipelineInfo.pInputAssemblyState = &configInfo.InputAssemblyInfo;
+			pipelineInfo.pViewportState = &configInfo.ViewportInfo;
+			pipelineInfo.pRasterizationState = &configInfo.RasterizationInfo;
+			pipelineInfo.pMultisampleState = &configInfo.MultisampleInfo;
+			pipelineInfo.pColorBlendState = &configInfo.ColorBlendInfo;
+			pipelineInfo.pDepthStencilState = &configInfo.DepthStencilInfo;
+			pipelineInfo.pDynamicState = &configInfo.DynamicStateInfo;
+
+			pipelineInfo.layout = configInfo.PipelineLayout;
+			pipelineInfo.renderPass = configInfo.RenderPass;
+			pipelineInfo.subpass = configInfo.Subpass;
+
+			pipelineInfo.basePipelineIndex = -1;
+			pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+			ONYX_VK_ASSERT(vkCreateGraphicsPipelines(Application::Get().GetDevice().GetHandle(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline),
+				"Failed to create graphics pipeline");
+		}
 	}
 
 	Pipeline::~Pipeline()
 	{
+		m_PipelineLayout = nullptr;
 		vkDestroyShaderModule(Application::Get().GetDevice().GetHandle(), m_VertShaderModule, nullptr);
 		vkDestroyShaderModule(Application::Get().GetDevice().GetHandle(), m_FragShaderModule, nullptr);
 		vkDestroyPipeline(Application::Get().GetDevice().GetHandle(), m_GraphicsPipeline, nullptr);
 	}
 
-	void Pipeline::Bind(VkCommandBuffer commandBuffer)
+	void Pipeline::Bind(const FrameInfo& info)
 	{
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
+		vkCmdBindPipeline(info.CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
+		vkCmdBindDescriptorSets(info.CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout->GetHandle(), 0, 1,
+			&info.GlobalDescriptorSet, 0, nullptr);
+	}
+
+	void Pipeline::PushConstants(const FrameInfo& info, const void* pValues)
+	{
+		vkCmdPushConstants(info.CommandBuffer, m_PipelineLayout->GetHandle(), m_PushConstantInfo.Flags, m_PushConstantInfo.Offset, m_PushConstantInfo.Size, pValues);
 	}
 
 	void Pipeline::DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
@@ -111,63 +202,6 @@ namespace Onyx
 
 		file.close();
 		return buffer;
-	}
-
-	void Pipeline::CreateGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath, const PipelineConfigInfo& configInfo)
-	{
-		ONYX_CORE_ASSERT(configInfo.PipelineLayout != VK_NULL_HANDLE, "Cannot create graphics pipeline:: no PipelineLayout provided in configInfo");
-		ONYX_CORE_ASSERT(configInfo.RenderPass != VK_NULL_HANDLE, "Cannot create graphics pipeline:: no RenderPass provided in configInfo");
-
-		CreateShaderModule(Application::Get().GetAssetManager().GetShader(vertFilepath), &m_VertShaderModule);
-		CreateShaderModule(Application::Get().GetAssetManager().GetShader(fragFilepath), &m_FragShaderModule);
-
-		VkPipelineShaderStageCreateInfo shaderStages[2];
-		shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
-		shaderStages[0].module = m_VertShaderModule;
-		shaderStages[0].pName = "main";
-		shaderStages[0].flags = 0;
-		shaderStages[0].pNext = nullptr;
-		shaderStages[0].pSpecializationInfo = nullptr;
-		shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		shaderStages[1].module = m_FragShaderModule;
-		shaderStages[1].pName = "main";
-		shaderStages[1].flags = 0;
-		shaderStages[1].pNext = nullptr;
-		shaderStages[1].pSpecializationInfo = nullptr;
-
-		auto& bindingDescriptions = configInfo.BindingDescriptions;
-		auto& attributeDescriptions = configInfo.AttributeDescriptions;
-		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
-		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
-		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
-		vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
-
-		VkGraphicsPipelineCreateInfo pipelineInfo{};
-		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-		pipelineInfo.stageCount = 2;
-		pipelineInfo.pStages = shaderStages;
-		pipelineInfo.pVertexInputState = &vertexInputInfo;
-		pipelineInfo.pInputAssemblyState = &configInfo.InputAssemblyInfo;
-		pipelineInfo.pViewportState = &configInfo.ViewportInfo;
-		pipelineInfo.pRasterizationState = &configInfo.RasterizationInfo;
-		pipelineInfo.pMultisampleState = &configInfo.MultisampleInfo;
-		pipelineInfo.pColorBlendState = &configInfo.ColorBlendInfo;
-		pipelineInfo.pDepthStencilState = &configInfo.DepthStencilInfo;
-		pipelineInfo.pDynamicState = &configInfo.DynamicStateInfo;
-
-		pipelineInfo.layout = configInfo.PipelineLayout;
-		pipelineInfo.renderPass = configInfo.RenderPass;
-		pipelineInfo.subpass = configInfo.Subpass;
-
-		pipelineInfo.basePipelineIndex = -1;
-		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
-
-		ONYX_VK_ASSERT(vkCreateGraphicsPipelines(Application::Get().GetDevice().GetHandle(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline), 
-			"Failed to create graphics pipeline");
 	}
 
 	void Pipeline::CreateShaderModule(const ShaderCode& code, VkShaderModule* shaderModule)

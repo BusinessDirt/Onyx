@@ -30,8 +30,6 @@ namespace Onyx
 
 			std::string filename = sourceFilePath.path().filename().string();
 			std::filesystem::path cachedFilePath = cachePath / (filename + ".spv");
-			ONYX_CORE_INFO("Cached File Path: {0}", cachedFilePath.string().c_str());
-			ONYX_CORE_INFO("Filename: {0}", filename);
 
 			m_Shaders.insert({ filename, ShaderCode(sourceFilePath, cachedFilePath, !std::filesystem::exists(cachedFilePath)) });
 		}

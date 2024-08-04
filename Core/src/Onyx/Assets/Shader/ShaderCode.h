@@ -9,6 +9,8 @@
 
 #include <filesystem>
 
+#include "Onyx/Assets/Shader/ShaderInformation.h"
+
 namespace Onyx
 {
 
@@ -19,6 +21,7 @@ namespace Onyx
 		~ShaderCode();
 
 		VkShaderModuleCreateInfo CreateInfo() const;
+		const ShaderInformation& GetInformation() const { return m_ShaderInformation; }
 
 	private:
 		void Compile(const std::filesystem::path& path, const std::filesystem::path& cachePath);
@@ -32,5 +35,6 @@ namespace Onyx
 
 	private:
 		std::vector<uint32_t> m_Data;
+		ShaderInformation m_ShaderInformation{};
 	};
 }

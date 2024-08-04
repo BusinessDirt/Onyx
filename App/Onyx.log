@@ -1,16 +1,38 @@
-[21:08:21] [info] ONYX: Shader Folder: D:\Dev\cpp\Onyx\App\assets\shaders
-[21:08:21] [info] ONYX: Cache Folder:  D:\Dev\cpp\Onyx\App\assets\shaders\cache
-[21:08:21] [info] ONYX: Cached File Path: D:\Dev\cpp\Onyx\App\assets\shaders\cache\point_light.frag.spv
-[21:08:21] [info] ONYX: Filename: point_light.frag
-[21:08:21] [trace] ONYX: ShaderCode::Reflect - point_light.frag
-[21:08:21] [trace] ONYX:     1 uniform buffers
-[21:08:21] [trace] ONYX:     0 resources
-[21:08:21] [trace] ONYX:     1 push constants
-[21:08:21] [trace] ONYX: Uniform buffers:
-[21:08:21] [trace] ONYX:   GlobalUbo
-[21:08:21] [trace] ONYX:     Size = 468
-[21:08:21] [trace] ONYX:     Binding = 0
-[21:08:21] [trace] ONYX:     Members:
-[21:08:21] [trace] ONYX:       mat4 ViewMatrix
-[21:08:22] [trace] ONYX:       mat4 ProjectionMatrix
-[21:08:22] [trace] ONYX:       vec4 AmbientLightColor
+[22:06:16] [info] ONYX: Shader Folder: D:\Dev\cpp\Onyx\App\assets\shaders
+[22:06:16] [info] ONYX: Cache Folder:  D:\Dev\cpp\Onyx\App\assets\shaders\cache
+[22:06:16] [info] ONYX: Creating window Onyx App (1280, 720)
+[22:06:16] [info] ONYX: Initializing GLFW
+[22:06:17] [info] ONYX: Available extensions: 
+[22:06:17] [info] ONYX: 	VK_KHR_device_group_creation
+[22:06:17] [info] ONYX: 	VK_KHR_display
+[22:06:17] [info] ONYX: 	VK_KHR_external_fence_capabilities
+[22:06:17] [info] ONYX: 	VK_KHR_external_memory_capabilities
+[22:06:17] [info] ONYX: 	VK_KHR_external_semaphore_capabilities
+[22:06:17] [info] ONYX: 	VK_KHR_get_display_properties2
+[22:06:17] [info] ONYX: 	VK_KHR_get_physical_device_properties2
+[22:06:17] [info] ONYX: 	VK_KHR_get_surface_capabilities2
+[22:06:17] [info] ONYX: 	VK_KHR_surface
+[22:06:17] [info] ONYX: 	VK_KHR_surface_protected_capabilities
+[22:06:17] [info] ONYX: 	VK_KHR_win32_surface
+[22:06:17] [info] ONYX: 	VK_EXT_debug_report
+[22:06:17] [info] ONYX: 	VK_EXT_debug_utils
+[22:06:17] [info] ONYX: 	VK_EXT_direct_mode_display
+[22:06:17] [info] ONYX: 	VK_EXT_surface_maintenance1
+[22:06:17] [info] ONYX: 	VK_EXT_swapchain_colorspace
+[22:06:17] [info] ONYX: 	VK_NV_external_memory_capabilities
+[22:06:17] [info] ONYX: 	VK_KHR_portability_enumeration
+[22:06:17] [info] ONYX: 	VK_LUNARG_direct_driver_loading
+[22:06:17] [info] ONYX: Required extensions:
+[22:06:17] [info] ONYX: 	VK_KHR_surface
+[22:06:17] [info] ONYX: 	VK_KHR_win32_surface
+[22:06:17] [info] ONYX: 	VK_EXT_debug_utils
+[22:06:17] [info] ONYX: Device count: 1
+[22:06:17] [info] ONYX: Physical Device: NVIDIA GeForce RTX 3060 Ti
+[22:06:17] [info] ONYX: Present mode: Mailbox
+[22:06:17] [info] ONYX: Vertex count (assets/models/flat_vase.obj): 23894
+[22:06:17] [info] ONYX: Vertex count (assets/models/smooth_vase.obj): 5545
+[22:06:17] [info] ONYX: Vertex count (assets/models/quad.obj): 4
+[22:06:17] [info] APP: Simple Push Constant Data Size: 128
+[22:06:17] [info] APP: Point Light Push Constant Data Size: 36
+[22:06:17] [info] ONYX: Present mode: Mailbox
+[22:07:00] [info] ONYX: Terminating GLFW

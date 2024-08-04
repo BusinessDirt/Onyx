@@ -16,11 +16,7 @@ namespace Onyx
 	{
 	public:
 		RenderSystem() = default;
-		~RenderSystem()
-		{
-			m_PipelineLayout = nullptr;
-			m_Pipeline = nullptr;
-		}
+		virtual ~RenderSystem() = default;
 
 		RenderSystem(const RenderSystem&) = delete;
 		RenderSystem& operator=(const RenderSystem&) = delete;
@@ -30,6 +26,5 @@ namespace Onyx
 
 	protected:
 		Scope<Pipeline> m_Pipeline;
-		Scope<PipelineLayout> m_PipelineLayout;
 	};
 }

@@ -24,22 +24,16 @@ namespace Onyx
 
 	SimpleRenderSystem::SimpleRenderSystem(const DescriptorSetLayout& globalSetLayout)
 	{
-		VkPushConstantRange pushConstantRange{};
-		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-		pushConstantRange.offset = 0;
-		pushConstantRange.size = sizeof(SimplePushConstantData);
+		PipelineConfigInfo configInfo{};
+		Pipeline::DefaultPipelineConfigInfo(configInfo);
 
-		m_PipelineLayout = CreateScope<PipelineLayout>(globalSetLayout, &pushConstantRange);
-		
-		ONYX_CORE_ASSERT(m_PipelineLayout, "Cannot create pipeline before pipeline layout");
+		ONYX_INFO("Simple Push Constant Data Size: {0}", sizeof(SimplePushConstantData));
+		m_Pipeline = CreateScope<Pipeline>("simple_shader.vert", "simple_shader.frag", configInfo, globalSetLayout);
+	}
 
-		PipelineConfigInfo pipelineConfig{};
-		Pipeline::DefaultPipelineConfigInfo(pipelineConfig);
-
-		pipelineConfig.RenderPass = Application::Get().GetRenderer().GetSwapChainRenderPass();
-		pipelineConfig.PipelineLayout = m_PipelineLayout->GetHandle();
-
-		m_Pipeline = CreateScope<Pipeline>("simple_shader.vert", "simple_shader.frag", pipelineConfig);
+	SimpleRenderSystem::~SimpleRenderSystem()
+	{
+		m_Pipeline = nullptr;
 	}
 
 	void SimpleRenderSystem::Update(FrameInfo& info, GlobalUbo& ubo)
@@ -48,10 +42,7 @@ namespace Onyx
 
 	void SimpleRenderSystem::Render(FrameInfo& info)
 	{
-		m_Pipeline->Bind(info.CommandBuffer);
-
-		vkCmdBindDescriptorSets(info.CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout->GetHandle(), 0, 1,
-			&info.GlobalDescriptorSet, 0, nullptr);
+		m_Pipeline->Bind(info);
 
 		for (auto& [id, obj] : info.GameObjects)
 		{
@@ -61,8 +52,7 @@ namespace Onyx
 			push.ModelMatrix = obj->Transform.GetTransform();
 			push.NormalMatrix = obj->Transform.GetNormalMatrix();
 
-			vkCmdPushConstants(info.CommandBuffer, m_PipelineLayout->GetHandle(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,
-				sizeof(SimplePushConstantData), &push);
+			m_Pipeline->PushConstants(info, &push);
 			obj->Model->Bind(info.CommandBuffer);
 			obj->Model->Draw(info.CommandBuffer);
 		}
