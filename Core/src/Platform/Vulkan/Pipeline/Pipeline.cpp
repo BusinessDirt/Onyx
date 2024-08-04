@@ -118,11 +118,8 @@ namespace Onyx
 		ONYX_CORE_ASSERT(configInfo.PipelineLayout != VK_NULL_HANDLE, "Cannot create graphics pipeline:: no PipelineLayout provided in configInfo");
 		ONYX_CORE_ASSERT(configInfo.RenderPass != VK_NULL_HANDLE, "Cannot create graphics pipeline:: no RenderPass provided in configInfo");
 
-		std::vector<char> vertCode = ReadFile(vertFilepath);
-		std::vector<char> fragCode = ReadFile(fragFilepath);
-
-		CreateShaderModule(vertCode, &m_VertShaderModule);
-		CreateShaderModule(fragCode, &m_FragShaderModule);
+		CreateShaderModule(Application::Get().GetAssetManager().GetShader(vertFilepath), &m_VertShaderModule);
+		CreateShaderModule(Application::Get().GetAssetManager().GetShader(fragFilepath), &m_FragShaderModule);
 
 		VkPipelineShaderStageCreateInfo shaderStages[2];
 		shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -173,13 +170,11 @@ namespace Onyx
 			"Failed to create graphics pipeline");
 	}
 
-	void Pipeline::CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
+	void Pipeline::CreateShaderModule(const ShaderCode& code, VkShaderModule* shaderModule)
 	{
-		VkShaderModuleCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-		createInfo.codeSize = code.size();
-		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+		VkShaderModuleCreateInfo createInfo = code.CreateInfo();
 
-		ONYX_VK_ASSERT(vkCreateShaderModule(Application::Get().GetDevice().GetHandle(), &createInfo, nullptr, shaderModule), "Failed to create shader module");
+		ONYX_VK_ASSERT(vkCreateShaderModule(Application::Get().GetDevice().GetHandle(), &createInfo, nullptr, shaderModule), 
+			"Failed to create shader module");
 	}
 }

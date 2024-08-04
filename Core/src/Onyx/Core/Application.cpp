@@ -22,6 +22,8 @@ namespace Onyx
 		ONYX_CORE_ASSERT(!s_Instance, "Application already exisits!");
 		s_Instance = this;
 
+		m_AssetManager = CreateScope<AssetManager>();
+
 		m_Window = Window::Create(WindowProps(name));
 		m_Window->SetEventCallback(ONYX_BIND_EVENT_FN(Application::OnEvent));
 

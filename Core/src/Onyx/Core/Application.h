@@ -16,6 +16,8 @@
 #include "Onyx/Scene/Camera.h"
 #include "Onyx/Scene/GameObject.h"
 
+#include "Onyx/Assets/AssetManager.h"
+
 #include "Platform/Vulkan/Instance.h"
 #include "Platform/Vulkan/DebugMessenger.h"
 #include "Platform/Vulkan/Surface.h"
@@ -55,6 +57,7 @@ namespace Onyx
 
 		void Close();
 
+		AssetManager& GetAssetManager() { return *m_AssetManager; }
 		Window& GetWindow() { return *m_Window; }
 		Instance& GetInstance() { return *m_Instance; }
 		DebugMessenger& GetDebugMessenger() { return *m_DebugMessenger; }
@@ -72,6 +75,7 @@ namespace Onyx
 		bool OnWindowResize(WindowResizeEvent& e);
 
 	private:
+		Scope<AssetManager> m_AssetManager;
 		Scope<Window> m_Window;
 		Scope<Instance> m_Instance;
 		Scope<DebugMessenger> m_DebugMessenger;

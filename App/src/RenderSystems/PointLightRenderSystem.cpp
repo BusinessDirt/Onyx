@@ -42,7 +42,7 @@ namespace Onyx
 		pipelineConfig.AttributeDescriptions.clear();
 		pipelineConfig.BindingDescriptions.clear();
 
-		m_Pipeline = CreateScope<Pipeline>("shaders/point_light.vert.spv", "shaders/point_light.frag.spv", pipelineConfig);
+		m_Pipeline = CreateScope<Pipeline>("point_light.vert", "point_light.frag", pipelineConfig);
 	}
 
 	void PointLightRenderSystem::Update(FrameInfo& info, GlobalUbo& ubo)

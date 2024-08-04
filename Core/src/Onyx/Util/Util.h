@@ -10,4 +10,6 @@ namespace Onyx
 		seed ^= std::hash<T>{}(v)+0x9e3779b9 + (seed << 6) + (seed >> 2);
 		(HashCombine(seed, rest), ...);
 	}
+
+	bool Contains(const std::string& str, const std::string& substr);
 }

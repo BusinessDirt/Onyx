@@ -4,6 +4,8 @@
 
 #include "Platform/Vulkan/Device.h"
 
+#include "Onyx/Assets/Shader/ShaderCode.h"
+
 #include <string>
 #include <vector>
 
@@ -49,7 +51,7 @@ namespace Onyx
 		static std::vector<char> ReadFile(const std::string& filepath);
 		void CreateGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath, const PipelineConfigInfo& configInfo);
 
-		void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
+		void CreateShaderModule(const ShaderCode& code, VkShaderModule* shaderModule);
 
 	private:
 		VkPipeline m_GraphicsPipeline;

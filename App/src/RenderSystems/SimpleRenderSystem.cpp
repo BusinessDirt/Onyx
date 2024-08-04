@@ -39,7 +39,7 @@ namespace Onyx
 		pipelineConfig.RenderPass = Application::Get().GetRenderer().GetSwapChainRenderPass();
 		pipelineConfig.PipelineLayout = m_PipelineLayout->GetHandle();
 
-		m_Pipeline = CreateScope<Pipeline>("shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);
+		m_Pipeline = CreateScope<Pipeline>("simple_shader.vert", "simple_shader.frag", pipelineConfig);
 	}
 
 	void SimpleRenderSystem::Update(FrameInfo& info, GlobalUbo& ubo)

@@ -15,7 +15,7 @@ struct PointLight
 	vec4 Color; // w is intensity
 };
 
-layout(set = 0, binding = 0) uniform GlobalUbo
+layout(std140, binding = 0) uniform GlobalUbo
 {
 	mat4 ViewMatrix;
 	mat4 ProjectionMatrix;

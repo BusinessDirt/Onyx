@@ -100,7 +100,7 @@ namespace Onyx
 
 	void ApplicationLayer::LoadGameObjects()
 	{
-		std::shared_ptr<Model> model = Model::Create("models/flat_vase.obj");
+		std::shared_ptr<Model> model = Model::Create("assets/models/flat_vase.obj");
 
 		Ref<GameObject> flatVase = GameObject::Create();
 		flatVase->Model = model;
@@ -108,7 +108,7 @@ namespace Onyx
 		flatVase->Transform.Scale = glm::vec3(3.0f, 1.5f, 3.0f);
 		m_GameObjects.emplace(flatVase->GetId(), std::move(flatVase));
 
-		model = Model::Create("models/smooth_vase.obj");
+		model = Model::Create("assets/models/smooth_vase.obj");
 
 		Ref<GameObject> smoothVase = GameObject::Create();
 		smoothVase->Model = model;
@@ -116,7 +116,7 @@ namespace Onyx
 		smoothVase->Transform.Scale = glm::vec3(3.0f, 1.5f, 3.0f);
 		m_GameObjects.emplace(smoothVase->GetId(), std::move(smoothVase));
 
-		model = Model::Create("models/quad.obj");
+		model = Model::Create("assets/models/quad.obj");
 
 		Ref<GameObject> floor = GameObject::Create();
 		floor->Model = model;
