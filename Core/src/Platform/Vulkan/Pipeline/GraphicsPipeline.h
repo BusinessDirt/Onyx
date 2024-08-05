@@ -19,8 +19,6 @@ namespace Onyx
 		PipelineConfigInfo() = default;
 		ONYX_NON_COPIABLE(PipelineConfigInfo);
 
-		std::vector<VkVertexInputBindingDescription> BindingDescriptions{};
-		std::vector<VkVertexInputAttributeDescription> AttributeDescriptions{};
 		VkPipelineViewportStateCreateInfo ViewportInfo;
 		VkPipelineInputAssemblyStateCreateInfo InputAssemblyInfo;
 		VkPipelineRasterizationStateCreateInfo RasterizationInfo;
@@ -32,8 +30,6 @@ namespace Onyx
 		std::vector<VkDynamicState> DynamicStateEnables;
 		VkPipelineDynamicStateCreateInfo DynamicStateInfo;
 
-		VkPipelineLayout PipelineLayout = VK_NULL_HANDLE;
-		VkRenderPass RenderPass = VK_NULL_HANDLE;
 		uint32_t Subpass = 0;
 	};
 

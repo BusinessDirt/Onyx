@@ -30,8 +30,8 @@ namespace Onyx
         createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
         createInfo.ppEnabledExtensionNames = extensions.data();
 
-        VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 #ifdef ONYX_DEBUG
+        VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
         createInfo.enabledLayerCount = static_cast<uint32_t>(m_ValidationLayers.size());
         createInfo.ppEnabledLayerNames = m_ValidationLayers.data();
 

@@ -27,11 +27,6 @@ namespace Onyx
 		void Compile(const std::filesystem::path& path, const std::filesystem::path& cachePath);
 
 		void Reflect(const std::filesystem::path& path);
-		void ReflectResource(const spirv_cross::Compiler& compiler, const spirv_cross::Resource& resource);
-		void ReflectMember(const spirv_cross::Compiler& compiler, const spirv_cross::Resource& resource,
-			const spirv_cross::SPIRType& bufferType, int index);
-
-		std::string TypeToString(spirv_cross::SPIRType type);
 
 	private:
 		std::vector<uint32_t> m_Data;

@@ -40,11 +40,9 @@ namespace Onyx
 
 		// Pipeline
 		{
-			configInfo.RenderPass = Application::Get().GetRenderer().GetSwapChainRenderPass();
-			configInfo.PipelineLayout = m_PipelineLayout->GetHandle();
-
-			ONYX_CORE_ASSERT(configInfo.PipelineLayout != VK_NULL_HANDLE, "Cannot create graphics pipeline:: no PipelineLayout provided in configInfo");
-			ONYX_CORE_ASSERT(configInfo.RenderPass != VK_NULL_HANDLE, "Cannot create graphics pipeline:: no RenderPass provided in configInfo");
+			// retrieve binding and attribute descriptions from vertex shader code
+			const std::vector<VkVertexInputBindingDescription>& bindingDescriptions = vertexCode.GetInformation().Bindings;
+			const std::vector<VkVertexInputAttributeDescription>& attributeDescriptions = vertexCode.GetInformation().Attributes;
 
 			ShaderModule vertexShader(vertexCode);
 			ShaderModule fragmentShader(fragmentCode);
@@ -65,8 +63,6 @@ namespace Onyx
 			shaderStages[1].pNext = nullptr;
 			shaderStages[1].pSpecializationInfo = nullptr;
 
-			auto& bindingDescriptions = configInfo.BindingDescriptions;
-			auto& attributeDescriptions = configInfo.AttributeDescriptions;
 			VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 			vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 			vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
@@ -87,8 +83,8 @@ namespace Onyx
 			pipelineInfo.pDepthStencilState = &configInfo.DepthStencilInfo;
 			pipelineInfo.pDynamicState = &configInfo.DynamicStateInfo;
 
-			pipelineInfo.layout = configInfo.PipelineLayout;
-			pipelineInfo.renderPass = configInfo.RenderPass;
+			pipelineInfo.layout = m_PipelineLayout->GetHandle();
+			pipelineInfo.renderPass = Application::Get().GetRenderer().GetSwapChainRenderPass();
 			pipelineInfo.subpass = configInfo.Subpass;
 
 			pipelineInfo.basePipelineIndex = -1;
@@ -184,9 +180,6 @@ namespace Onyx
 		configInfo.DynamicStateInfo.pDynamicStates = configInfo.DynamicStateEnables.data();
 		configInfo.DynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(configInfo.DynamicStateEnables.size());
 		configInfo.DynamicStateInfo.flags = 0;
-
-		configInfo.BindingDescriptions = Model::Vertex::GetBindingDescription();
-		configInfo.AttributeDescriptions = Model::Vertex::GetAttributeDescription();
 	}
 
 	std::vector<char> GraphicsPipeline::ReadFile(const std::string& filepath)

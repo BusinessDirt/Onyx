@@ -22,9 +22,6 @@ namespace Onyx
 			glm::vec3 Normal;
 			glm::vec2 UV;
 
-			static std::vector<VkVertexInputBindingDescription> GetBindingDescription();
-			static std::vector<VkVertexInputAttributeDescription> GetAttributeDescription();
-
 			bool operator==(const Vertex& other) const
 			{
 				return Position == other.Position && Color == other.Color && 

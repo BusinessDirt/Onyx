@@ -1,42 +1,35 @@
-[22:34:32] [info] ONYX: Shader Folder: D:\Dev\cpp\Onyx\App\assets\shaders
-[22:34:32] [info] ONYX: Cache Folder:  D:\Dev\cpp\Onyx\App\assets\shaders\cache
-[22:34:33] [info] ONYX: Final binary words: 420
-[22:34:33] [info] ONYX: Final binary words: 814
-[22:34:34] [info] ONYX: Final binary words: 853
-[22:34:35] [info] ONYX: Final binary words: 713
-[22:34:35] [info] ONYX: Creating window Onyx App (1280, 720)
-[22:34:35] [info] ONYX: Initializing GLFW
-[22:34:38] [info] ONYX: Available extensions: 
-[22:34:38] [info] ONYX: 	VK_KHR_device_group_creation
-[22:34:38] [info] ONYX: 	VK_KHR_display
-[22:34:38] [info] ONYX: 	VK_KHR_external_fence_capabilities
-[22:34:38] [info] ONYX: 	VK_KHR_external_memory_capabilities
-[22:34:38] [info] ONYX: 	VK_KHR_external_semaphore_capabilities
-[22:34:38] [info] ONYX: 	VK_KHR_get_display_properties2
-[22:34:38] [info] ONYX: 	VK_KHR_get_physical_device_properties2
-[22:34:38] [info] ONYX: 	VK_KHR_get_surface_capabilities2
-[22:34:38] [info] ONYX: 	VK_KHR_surface
-[22:34:38] [info] ONYX: 	VK_KHR_surface_protected_capabilities
-[22:34:38] [info] ONYX: 	VK_KHR_win32_surface
-[22:34:38] [info] ONYX: 	VK_EXT_debug_report
-[22:34:38] [info] ONYX: 	VK_EXT_debug_utils
-[22:34:38] [info] ONYX: 	VK_EXT_direct_mode_display
-[22:34:38] [info] ONYX: 	VK_EXT_surface_maintenance1
-[22:34:38] [info] ONYX: 	VK_EXT_swapchain_colorspace
-[22:34:38] [info] ONYX: 	VK_NV_external_memory_capabilities
-[22:34:38] [info] ONYX: 	VK_KHR_portability_enumeration
-[22:34:38] [info] ONYX: 	VK_LUNARG_direct_driver_loading
-[22:34:38] [info] ONYX: Required extensions:
-[22:34:38] [info] ONYX: 	VK_KHR_surface
-[22:34:38] [info] ONYX: 	VK_KHR_win32_surface
-[22:34:38] [info] ONYX: 	VK_EXT_debug_utils
-[22:34:38] [info] ONYX: Device count: 1
-[22:34:39] [info] ONYX: Physical Device: NVIDIA GeForce RTX 3060 Ti
-[22:34:40] [info] ONYX: Present mode: Mailbox
-[22:34:41] [info] ONYX: Vertex count (assets/models/flat_vase.obj): 23894
-[22:34:41] [info] ONYX: Vertex count (assets/models/smooth_vase.obj): 5545
-[22:34:41] [info] ONYX: Vertex count (assets/models/quad.obj): 4
-[22:34:41] [info] APP: Simple Push Constant Data Size: 128
-[22:34:41] [info] APP: Point Light Push Constant Data Size: 36
-[22:34:41] [info] ONYX: Present mode: Mailbox
-[22:34:56] [info] ONYX: Terminating GLFW
+[00:05:29] [info] ONYX: Shader Folder: D:\Dev\cpp\Onyx\App\assets\shaders
+[00:05:29] [info] ONYX: Cache Folder:  D:\Dev\cpp\Onyx\App\assets\shaders\cache
+[00:05:29] [info] ONYX: Creating window Onyx App (1280, 720)
+[00:05:29] [info] ONYX: Initializing GLFW
+[00:05:29] [info] ONYX: Available extensions: 
+[00:05:29] [info] ONYX: 	VK_KHR_device_group_creation
+[00:05:29] [info] ONYX: 	VK_KHR_display
+[00:05:29] [info] ONYX: 	VK_KHR_external_fence_capabilities
+[00:05:29] [info] ONYX: 	VK_KHR_external_memory_capabilities
+[00:05:29] [info] ONYX: 	VK_KHR_external_semaphore_capabilities
+[00:05:29] [info] ONYX: 	VK_KHR_get_display_properties2
+[00:05:29] [info] ONYX: 	VK_KHR_get_physical_device_properties2
+[00:05:29] [info] ONYX: 	VK_KHR_get_surface_capabilities2
+[00:05:29] [info] ONYX: 	VK_KHR_surface
+[00:05:29] [info] ONYX: 	VK_KHR_surface_protected_capabilities
+[00:05:29] [info] ONYX: 	VK_KHR_win32_surface
+[00:05:29] [info] ONYX: 	VK_EXT_debug_report
+[00:05:29] [info] ONYX: 	VK_EXT_debug_utils
+[00:05:29] [info] ONYX: 	VK_EXT_direct_mode_display
+[00:05:29] [info] ONYX: 	VK_EXT_surface_maintenance1
+[00:05:29] [info] ONYX: 	VK_EXT_swapchain_colorspace
+[00:05:29] [info] ONYX: 	VK_NV_external_memory_capabilities
+[00:05:29] [info] ONYX: 	VK_KHR_portability_enumeration
+[00:05:29] [info] ONYX: 	VK_LUNARG_direct_driver_loading
+[00:05:29] [info] ONYX: Required extensions:
+[00:05:29] [info] ONYX: 	VK_KHR_surface
+[00:05:29] [info] ONYX: 	VK_KHR_win32_surface
+[00:05:29] [info] ONYX: Device count: 1
+[00:05:29] [info] ONYX: Physical Device: NVIDIA GeForce RTX 3060 Ti
+[00:05:30] [info] ONYX: Present mode: Mailbox
+[00:05:30] [info] ONYX: Vertex count (assets/models/flat_vase.obj): 23894
+[00:05:30] [info] ONYX: Vertex count (assets/models/smooth_vase.obj): 5545
+[00:05:30] [info] ONYX: Vertex count (assets/models/quad.obj): 4
+[00:05:30] [info] APP: Simple Push Constant Data Size: 128
+[00:05:30] [info] APP: Point Light Push Constant Data Size: 36

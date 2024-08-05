@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Onyx/Core/Base.h"
+
 #include <cstdint>
 #include <vector>
 
@@ -20,7 +22,9 @@ namespace Onyx
 
 	struct ShaderInformation
 	{
-		std::vector<UniformBufferInformation> UniformBuffers; // multiple uniform buffers per shader
 		PushConstantInformation PushConstantInformation{}; // only one push constant per shader
+		std::vector<UniformBufferInformation> UniformBuffers; // multiple uniform buffers per shader
+		std::vector<VkVertexInputBindingDescription> Bindings;
+		std::vector<VkVertexInputAttributeDescription> Attributes;
 	};
 }
