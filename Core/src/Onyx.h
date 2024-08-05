@@ -20,4 +20,4 @@
 #include "Platform/Vulkan/Descriptor/Manager.h"
 
 #include "Platform/Vulkan/Pipeline/PipelineLayout.h"
-#include "Platform/Vulkan/Pipeline/Pipeline.h"
+#include "Platform/Vulkan/Pipeline/GraphicsPipeline.h"

@@ -112,7 +112,6 @@ namespace Onyx
 		}
 
 		m_Data = std::vector<uint32_t>(compiled.cbegin(), compiled.cend());
-		ONYX_CORE_INFO("Final binary words: {0}", m_Data.size());
 
 		std::ofstream out(cachePath, std::ios::out | std::ios::binary);
 		if (out.is_open()) 

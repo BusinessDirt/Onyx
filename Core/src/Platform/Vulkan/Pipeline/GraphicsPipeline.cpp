@@ -1,15 +1,17 @@
 #include "stdafx.h"
-#include "Pipeline.h"
+#include "GraphicsPipeline.h"
 
 #include "Onyx/Scene/Model.h"
 
 #include "Onyx/Core/Application.h"
 
+#include "Platform/Vulkan/ShaderModule.h"
+
 #include <fstream>
 
 namespace Onyx
 {
-	Pipeline::Pipeline(const std::string& vertFilepath, const std::string& fragFilepath, PipelineConfigInfo& configInfo, const DescriptorSetLayout& descriptorSetLayout)
+	GraphicsPipeline::GraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath, PipelineConfigInfo& configInfo, const DescriptorSetLayout& descriptorSetLayout)
 	{
 		const ShaderCode& vertexCode = Application::Get().GetAssetManager().GetShader(vertFilepath);
 		const ShaderCode& fragmentCode = Application::Get().GetAssetManager().GetShader(fragFilepath);
@@ -44,20 +46,20 @@ namespace Onyx
 			ONYX_CORE_ASSERT(configInfo.PipelineLayout != VK_NULL_HANDLE, "Cannot create graphics pipeline:: no PipelineLayout provided in configInfo");
 			ONYX_CORE_ASSERT(configInfo.RenderPass != VK_NULL_HANDLE, "Cannot create graphics pipeline:: no RenderPass provided in configInfo");
 
-			CreateShaderModule(vertexCode, &m_VertShaderModule);
-			CreateShaderModule(fragmentCode, &m_FragShaderModule);
+			ShaderModule vertexShader(vertexCode);
+			ShaderModule fragmentShader(fragmentCode);
 
 			VkPipelineShaderStageCreateInfo shaderStages[2];
 			shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 			shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
-			shaderStages[0].module = m_VertShaderModule;
+			shaderStages[0].module = vertexShader.GetHandle();
 			shaderStages[0].pName = "main";
 			shaderStages[0].flags = 0;
 			shaderStages[0].pNext = nullptr;
 			shaderStages[0].pSpecializationInfo = nullptr;
 			shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 			shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-			shaderStages[1].module = m_FragShaderModule;
+			shaderStages[1].module = fragmentShader.GetHandle();
 			shaderStages[1].pName = "main";
 			shaderStages[1].flags = 0;
 			shaderStages[1].pNext = nullptr;
@@ -97,27 +99,25 @@ namespace Onyx
 		}
 	}
 
-	Pipeline::~Pipeline()
+	GraphicsPipeline::~GraphicsPipeline()
 	{
 		m_PipelineLayout = nullptr;
-		vkDestroyShaderModule(Application::Get().GetDevice().GetHandle(), m_VertShaderModule, nullptr);
-		vkDestroyShaderModule(Application::Get().GetDevice().GetHandle(), m_FragShaderModule, nullptr);
 		vkDestroyPipeline(Application::Get().GetDevice().GetHandle(), m_GraphicsPipeline, nullptr);
 	}
 
-	void Pipeline::Bind(const FrameInfo& info)
+	void GraphicsPipeline::Bind(const FrameInfo& info)
 	{
 		vkCmdBindPipeline(info.CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 		vkCmdBindDescriptorSets(info.CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout->GetHandle(), 0, 1,
 			&info.GlobalDescriptorSet, 0, nullptr);
 	}
 
-	void Pipeline::PushConstants(const FrameInfo& info, const void* pValues)
+	void GraphicsPipeline::PushConstants(const FrameInfo& info, const void* pValues)
 	{
 		vkCmdPushConstants(info.CommandBuffer, m_PipelineLayout->GetHandle(), m_PushConstantInfo.Flags, m_PushConstantInfo.Offset, m_PushConstantInfo.Size, pValues);
 	}
 
-	void Pipeline::DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
+	void GraphicsPipeline::DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
 	{
 		configInfo.InputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		configInfo.InputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -189,7 +189,7 @@ namespace Onyx
 		configInfo.AttributeDescriptions = Model::Vertex::GetAttributeDescription();
 	}
 
-	std::vector<char> Pipeline::ReadFile(const std::string& filepath)
+	std::vector<char> GraphicsPipeline::ReadFile(const std::string& filepath)
 	{
 		std::ifstream file{ filepath, std::ios::ate | std::ios::binary };
 		ONYX_CORE_ASSERT(file.is_open(), "Could not open file " + filepath);
@@ -202,13 +202,5 @@ namespace Onyx
 
 		file.close();
 		return buffer;
-	}
-
-	void Pipeline::CreateShaderModule(const ShaderCode& code, VkShaderModule* shaderModule)
-	{
-		VkShaderModuleCreateInfo createInfo = code.CreateInfo();
-
-		ONYX_VK_ASSERT(vkCreateShaderModule(Application::Get().GetDevice().GetHandle(), &createInfo, nullptr, shaderModule), 
-			"Failed to create shader module");
 	}
 }

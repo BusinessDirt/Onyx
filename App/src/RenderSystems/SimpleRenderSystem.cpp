@@ -25,10 +25,10 @@ namespace Onyx
 	SimpleRenderSystem::SimpleRenderSystem(const DescriptorSetLayout& globalSetLayout)
 	{
 		PipelineConfigInfo configInfo{};
-		Pipeline::DefaultPipelineConfigInfo(configInfo);
+		GraphicsPipeline::DefaultPipelineConfigInfo(configInfo);
 
 		ONYX_INFO("Simple Push Constant Data Size: {0}", sizeof(SimplePushConstantData));
-		m_Pipeline = CreateScope<Pipeline>("simple_shader.vert", "simple_shader.frag", configInfo, globalSetLayout);
+		m_Pipeline = CreateScope<GraphicsPipeline>("simple_shader.vert", "simple_shader.frag", configInfo, globalSetLayout);
 	}
 
 	SimpleRenderSystem::~SimpleRenderSystem()

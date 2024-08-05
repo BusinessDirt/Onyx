@@ -27,12 +27,12 @@ namespace Onyx
 	PointLightRenderSystem::PointLightRenderSystem(const DescriptorSetLayout& globalSetLayout)
 	{
 		PipelineConfigInfo configInfo{};
-		Pipeline::DefaultPipelineConfigInfo(configInfo);
+		GraphicsPipeline::DefaultPipelineConfigInfo(configInfo);
 		configInfo.AttributeDescriptions.clear();
 		configInfo.BindingDescriptions.clear();
 
 		ONYX_INFO("Point Light Push Constant Data Size: {0}", sizeof(PointLightPushConstant));
-		m_Pipeline = CreateScope<Pipeline>("point_light.vert", "point_light.frag", configInfo, globalSetLayout);
+		m_Pipeline = CreateScope<GraphicsPipeline>("point_light.vert", "point_light.frag", configInfo, globalSetLayout);
 	}
 
 	PointLightRenderSystem::~PointLightRenderSystem()

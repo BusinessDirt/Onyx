@@ -6,8 +6,7 @@
 
 #include "Platform/Vulkan/FrameInfo.h"
 
-#include "Platform/Vulkan/Pipeline/Pipeline.h"
-#include "Platform/Vulkan/Pipeline/PipelineLayout.h"
+#include "Platform/Vulkan/Pipeline/GraphicsPipeline.h"
 #include "Platform/Vulkan/Descriptor/Layout.h"
 
 namespace Onyx
@@ -25,6 +24,6 @@ namespace Onyx
 		virtual void Render(FrameInfo& info) = 0;
 
 	protected:
-		Scope<Pipeline> m_Pipeline;
+		Scope<GraphicsPipeline> m_Pipeline;
 	};
 }

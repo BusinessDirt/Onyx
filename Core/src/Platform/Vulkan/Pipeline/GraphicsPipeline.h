@@ -37,14 +37,14 @@ namespace Onyx
 		uint32_t Subpass = 0;
 	};
 
-	class Pipeline
+	class GraphicsPipeline
 	{
 	public:
-		Pipeline(const std::string& vertFilepath, const std::string& fragFilepath, PipelineConfigInfo& configInfo, const DescriptorSetLayout& descriptorSetLayout);
-		~Pipeline();
+		GraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath, PipelineConfigInfo& configInfo, const DescriptorSetLayout& descriptorSetLayout);
+		~GraphicsPipeline();
 
-		Pipeline(const Pipeline&) = delete;
-		Pipeline& operator=(const Pipeline&) = delete;
+		GraphicsPipeline(const GraphicsPipeline&) = delete;
+		GraphicsPipeline& operator=(const GraphicsPipeline&) = delete;
 
 		void Bind(const FrameInfo& info);
 		void PushConstants(const FrameInfo& info, const void* pValues);
@@ -66,8 +66,6 @@ namespace Onyx
 	private:
 		Scope<PipelineLayout> m_PipelineLayout;
 		VkPipeline m_GraphicsPipeline;
-		VkShaderModule m_VertShaderModule;
-		VkShaderModule m_FragShaderModule;
 
 		PushConstantInfo m_PushConstantInfo{};
 	};

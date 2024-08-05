@@ -142,7 +142,7 @@ namespace Onyx
 	void Renderer::FreeCommandBuffers()
 	{
 		vkFreeCommandBuffers(Application::Get().GetDevice().GetHandle(), Application::Get().GetCommandPool().GetHandle(), 
-			static_cast<float>(m_CommandBuffers.size()), m_CommandBuffers.data());
+			m_CommandBuffers.size(), m_CommandBuffers.data());
 		m_CommandBuffers.clear();
 	}
 
